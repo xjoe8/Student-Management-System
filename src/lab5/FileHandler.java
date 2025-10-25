@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class FileHandler {
     private final String filename;
@@ -15,7 +16,6 @@ public class FileHandler {
     public FileHandler (String filename){
         this.filename = filename;
         this.students = new ArrayList<>();
-        //loadStudents();
     }
     
     public void loadStudents(){
@@ -102,5 +102,31 @@ public class FileHandler {
             }
         }
         return result;
+    }
+    
+    public boolean updateStudent(Student updatedStudent) {
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getStudentID() == updatedStudent.getStudentID()) {
+                if (!validateStudent(updatedStudent)) 
+                    return false;
+                students.set(i, updatedStudent);
+                saveStudents();
+                return true;
+            }
+        }
+        return false;   //if student not found
+    }
+
+    public boolean deleteStudent(int id) {
+        Iterator<Student> it = students.iterator();
+        while (it.hasNext()) {
+            Student s = it.next();
+            if (s.getStudentID() == id) {
+                it.remove();
+                saveStudents();
+                return true;
+            }
+        }
+        return false;
     }
 }
