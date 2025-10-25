@@ -68,7 +68,7 @@ public class Student {
     }
 
     public String lineRepresentation(){
-        return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + GPA;
+        return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + GPA + "\n";
     }
      
     
