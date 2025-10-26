@@ -129,4 +129,14 @@ public class FileHandler {
         }
         return false;
     }
+
+    public int getNextStudentID() {
+        try {
+            Idgenerator idGen = new Idgenerator(filename);
+            return idGen.getGenID();
+        } 
+        catch (FileNotFoundException e) {
+            return 1; //if the file doesn’t exist yet, start from 1
+        }
+    }
 }
