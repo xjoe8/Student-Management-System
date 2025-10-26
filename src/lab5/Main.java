@@ -1,6 +1,10 @@
-package lab5;
+import javax.swing.SwingUtilities;
+
 public class Main {
-    static public void main(String[] args) {
-        new MainWindow();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Login login = new Login();
+            login.setVisible(true);
+        });
     }
 }
