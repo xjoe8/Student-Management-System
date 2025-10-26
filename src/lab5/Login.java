@@ -30,7 +30,7 @@ public class Login extends GUI implements ActionListener {
         this.add(label3);
 
         int [] passwordFieldDimension = {150, 330, 250, 40};
-        passwordField = newPasswordField(passwordFieldDimension, "Password");
+        passwordField = newPasswordField(passwordFieldDimension, " Password");
         this.add(passwordField);
 
         int [] buttonDimension1 = {100, 450, 150, 50};
@@ -53,7 +53,7 @@ public class Login extends GUI implements ActionListener {
             System.out.println(password);
             //method that checks if username and password are found in the file or not
             //this method should return true or false
-            //if true then it access the main menu
+            //if true then it access the main window
             //if false then it gives an error message and the user clicks on okay then it goes to the login page again
         }
         if (e.getSource() == exitButton){

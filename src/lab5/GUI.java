@@ -1,6 +1,7 @@
 package lab5;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import org.jdesktop.swingx.prompt.PromptSupport;
 public abstract class GUI extends JFrame {
@@ -11,7 +12,6 @@ public abstract class GUI extends JFrame {
     final Color defaultColor = new Color(0x323232);
     final Color darkGrey = new Color(0x252525);
     public GUI() {
-        this.setVisible(true);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(defaultColor);
@@ -62,5 +62,29 @@ public abstract class GUI extends JFrame {
         panel.setBackground(color);
         panel.setLayout(null);
         return panel;
+    }
+    public JTable newTable(String[] columns) {
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable table = new JTable(model);
+        table.setFont(font2);
+        table.setRowHeight(34);
+        table.setForeground(whiteColor);
+        table.setBackground(defaultColor);
+        table.setGridColor(whiteColor);
+        table.setShowGrid(true);
+        table.setShowHorizontalLines(true);
+        table.setShowVerticalLines(true);
+        table.setSelectionBackground(darkGrey);
+        table.setSelectionForeground(whiteColor);
+        table.getTableHeader().setFont(font2);
+        table.getTableHeader().setBackground(blackColor);
+        table.getTableHeader().setForeground(whiteColor);
+        table.setFillsViewportHeight(true);
+        return table;
     }
 }
