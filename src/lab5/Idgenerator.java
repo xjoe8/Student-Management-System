@@ -1,58 +1,30 @@
+import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-package lab5;
+public class IdGenerator {
+    private final File seqFile;
+    private final AtomicInteger current;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
-
-public class Idgenerator {
-    private String filename;
-    private int genID;
-
-    public Idgenerator(String filename) throws FileNotFoundException{
-        this.filename = filename;
-        this.genID = createID(filename);
+    public IdGenerator(String seqFilePath, int startAt) {
+        this.seqFile = new File(seqFilePath);
+        this.current = new AtomicInteger(readLastId(startAt));
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public int getGenID() {
-        return genID;
-    }
-
-    public void setGenID(int genID) {
-        this.genID = genID;
-    }
-
-    private int createID(String filename){
-        int maxID = 0;
-
-        try(BufferedReader reader = new BufferedReader(new FileReader(filename))){
-            String line;
-            while((line = reader.readLine()) != null){
-                String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0]);
-                if( id > maxID ) maxID = id;
-            }
-
-        }catch(FileNotFoundException e){
-            maxID = 0;
+    private int readLastId(int fallback) {
+        if (!seqFile.exists()) return fallback;
+        try (BufferedReader br = new BufferedReader(new FileReader(seqFile))) {
+            String s = br.readLine();
+            return s == null ? fallback : Integer.parseInt(s.trim());
+        } catch (Exception e) {
+            return fallback;
         }
-        catch (IOException | NumberFormatException e){
-            System.out.println("Error reading Student file: " + e.getMessage());
-        }
-        return maxID+1;
     }
 
-
-
-
+    public synchronized int nextId() {
+        int id = current.incrementAndGet();
+        try (PrintWriter pw = new PrintWriter(new FileWriter(seqFile))) {
+            pw.println(id);
+        } catch (IOException ignored) {}
+        return id;
+    }
 }
