@@ -1,107 +1,81 @@
-package lab5;
-
 public class Student {
-    private int studentID;
-    private String fullname;
+    private int id;
+    private String fullName;
     private int age;
-    private char gender;
+    private String gender;
     private String department;
-    private float GPA;
+    private double gpa;
 
-    public Student(int studentID, String fullname, int age, char gender, String department, float GPA) {
-        
-        setStudentID(studentID);
-        setFullname(fullname);
-        setAge(age);
-        setGender(gender);
-        setDepartment(department);
-        setGPA(GPA);
+    public Student(int id, String fullName, int age, String gender, String department, double gpa) {
+        this.id = id;
+        this.fullName = fullName;
+        this.age = age;
+        this.gender = gender;
+        this.department = department;
+        this.gpa = gpa;
     }
 
-    public int getStudentID() {
-        return studentID;
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+    public double getGpa() { return gpa; }
+    public void setGpa(double gpa) { this.gpa = gpa; }
+
+    public String toCSV() {
+        return id + "," + escape(fullName) + "," + age + "," + gender + "," + escape(department) + "," + gpa;
     }
 
-    public void setStudentID(int studentID) {
-        if (studentID > 0) {
-            this.studentID = studentID;
-        } 
-        else {
-            System.out.println("Invalid student ID. Must be positive.");
+    public static Student fromCSV(String line) {
+        String[] parts = CSV.split(line);
+        if (parts.length < 6) return null;
+        int id = Integer.parseInt(parts[0]);
+        String fullName = CSV.unescape(parts[1]);
+        int age = Integer.parseInt(parts[2]);
+        String gender = parts[3];
+        String department = CSV.unescape(parts[4]);
+        double gpa = Double.parseDouble(parts[5]);
+        return new Student(id, fullName, age, gender, department, gpa);
+    }
+
+    private static String escape(String s) {
+        if (s == null) return "";
+        if (s.contains(",") || s.contains("\"")) {
+            s = s.replace("\"", "\"\"");
+            return "\"" + s + "\"";
         }
+        return s;
     }
 
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        if (fullname != null && !fullname.trim().isEmpty()) {
-            this.fullname = fullname.trim();
-        } 
-        else {
-            System.out.println("Invalid full name. Cannot be empty.");
-        }
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        if (age >= 16 && age <= 100) {
-            this.age = age;
-        } 
-        else {
-            throw new IllegalArgumentException("Invalid age. Must be between 16 and 100.");
-        }
-    }
-
-
-    public char getGender() {
-        return gender;
-    }
-
-    public void setGender(char gender) {
-        if ( Character.isLetter(gender) ) {
-            gender = Character.toUpperCase(gender);
-            if (gender == 'M' || gender == 'F') {
-                this.gender = gender;
-                return;
-            } 
-        }
-            else {
-                System.out.println("Invalid gender. Must be 'M' or 'F'.");
+    private static class CSV {
+        static String[] split(String line) {
+            java.util.List<String> out = new java.util.ArrayList<>();
+            StringBuilder sb = new StringBuilder();
+            boolean inQ = false;
+            for (int i=0;i<line.length();i++) {
+                char c = line.charAt(i);
+                if (inQ) {
+                    if (c=='"') {
+                        if (i+1<line.length() && line.charAt(i+1)=='"') { sb.append('"'); i++; }
+                        else { inQ = false; }
+                    } else {
+                        sb.append(c);
+                    }
+                } else {
+                    if (c=='"') inQ = true;
+                    else if (c==',') { out.add(sb.toString()); sb.setLength(0); }
+                    else sb.append(c);
+                }
             }
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        if (department != null && !department.trim().isEmpty()) {
-            this.department = department.trim();
-        } 
-        else {
-            System.out.println("Invalid department. Cannot be empty.");
+            out.add(sb.toString());
+            return out.toArray(new String[0]);
         }
-    }
-
-    public float getGPA() {
-        return GPA;
-    }
-
-    public void setGPA(float GPA) {
-        if (GPA >= 0.0f && GPA <= 4.0f) {
-            this.GPA = GPA;
-        } 
-        else {
-            System.out.println("Invalid GPA. Must be between 0.0 and 4.0.");
-        }
-    }
-
-    public String lineRepresentation() {
-        return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + String.format("%.2f", GPA);
+        static String unescape(String s) { return s == null ? "" : s; }
     }
 }
