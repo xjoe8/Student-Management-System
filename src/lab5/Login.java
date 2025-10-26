@@ -1,82 +1,84 @@
-package lab5;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.io.*;
 
-public class Login extends GUI implements ActionListener {
-    public JButton loginButton, exitButton;
-    JTextField textField;
-    JPasswordField passwordField;
-    
+public class Login extends JFrame {
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+
     public Login() {
-        this.setSize(700,600);
-        this.setTitle("Login Page");
+        setTitle("Student Management System - Login");
+        setSize(380, 220);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-        int [] panelDimension1 = {0, 0, 700, 100};
-        JPanel welcomePanel = newPanel(panelDimension1, darkGrey);
-        this.add(welcomePanel);
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8,8,8,8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel label1 = newLabel("Welcome to Student Management System", font, JLabel.CENTER, JLabel.CENTER, panelDimension1);
-        welcomePanel.add(label1);
+        JLabel uLabel = new JLabel("Username:");
+        JLabel pLabel = new JLabel("Password:");
+        usernameField = new JTextField(18);
+        passwordField = new JPasswordField(18);
+        loginButton = new JButton("Login");
 
-        int [] labelDimension1 = {50, 150, 300, 100};
-        JLabel label2 = newLabel("Username:", font2, JLabel.CENTER, JLabel.TOP, labelDimension1);
-        this.add(label2);
+        gbc.gridx=0; gbc.gridy=0; panel.add(uLabel, gbc);
+        gbc.gridx=1; gbc.gridy=0; panel.add(usernameField, gbc);
+        gbc.gridx=0; gbc.gridy=1; panel.add(pLabel, gbc);
+        gbc.gridx=1; gbc.gridy=1; panel.add(passwordField, gbc);
+        gbc.gridwidth = 2;
+        gbc.gridx=0; gbc.gridy=2; panel.add(loginButton, gbc);
 
-        int [] textFieldDimension = {150, 180, 250, 40};
-        textField = newTextField(textFieldDimension, " Username");
-        this.add(textField);
+        add(panel);
 
-        int [] labelDimension2 = {50, 300, 300, 100};
-        JLabel label3 = newLabel("Password:", font2, JLabel.CENTER, JLabel.TOP, labelDimension2);
-        this.add(label3);
-
-        int [] passwordFieldDimension = {150, 330, 250, 40};
-        passwordField = newPasswordField(passwordFieldDimension, " Password");
-        this.add(passwordField);
-
-        int [] buttonDimension1 = {100, 450, 150, 50};
-        loginButton = newButton("Login", buttonDimension1, this);
-        this.add(loginButton);
-
-        int [] buttonDimension2 = {450, 450, 150, 50};
-        exitButton = newButton("Exit", buttonDimension2, this);
-        this.add(exitButton);
-
-        this.repaint();
-        this.revalidate();
+        getRootPane().setDefaultButton(loginButton);
+        loginButton.addActionListener(e -> attemptLogin());
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == loginButton){
-            String username = textField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-            
-            if ( checkCrendits(username, password) ) {
-                this.dispose(); // close login window
-                FileHandler handler = new FileHandler("students.txt");
-                new MainWindow(handler);
-            }
-            else {
-                JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
-            }
+
+    private void attemptLogin() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter username and password.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        if (e.getSource() == exitButton){
-            System.exit(0);
+
+        try {
+            if (authenticate(username, password)) {
+                SwingUtilities.invokeLater(() -> {
+                    MainWindow mw = new MainWindow(username);
+                    mw.setVisible(true);
+                });
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid credentials.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "users.txt not found or unreadable.\nPlace it next to the .jar/.class files.\nFormat: username:password (one per line)",
+                                          "File Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private boolean checkCredentials(String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+    private boolean authenticate(String username, String password) throws IOException {
+        File f = new File("users.txt");
+        if (!f.exists()) throw new FileNotFoundException("users.txt not found");
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 2 && parts[0].equals(username) && parts[1].equals(password)) {
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) continue;
+                String[] parts = line.split(":", 2);
+                if (parts.length != 2) continue;
+                String u = parts[0].trim();
+                String p = parts[1].trim();
+                if (u.equals(username) && p.equals(password)) {
                     return true;
                 }
             }
-        } catch (IOException ex) {
-            System.out.println("Error reading users file: " + ex.getMessage());
         }
         return false;
     }
