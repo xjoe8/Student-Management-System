@@ -16,7 +16,6 @@ public class FileHandler {
     public FileHandler (String filename){
         this.filename = filename;
         this.students = new ArrayList<>();
-        loadStudents();
     }
     
     public void loadStudents(){
@@ -133,4 +132,5 @@ public class FileHandler {
         return false;
     }
 }
+
 
