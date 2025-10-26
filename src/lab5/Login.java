@@ -2,11 +2,13 @@ package lab5;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 public class Login extends GUI implements ActionListener {
     public JButton loginButton, exitButton;
     JTextField textField;
     JPasswordField passwordField;
-    public Login(){
+    
+    public Login() {
         this.setSize(700,600);
         this.setTitle("Login Page");
 
@@ -47,17 +49,35 @@ public class Login extends GUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton){
-            String username = textField.getText();
-            String password = new String(passwordField.getPassword());
-            System.out.println(username);
-            System.out.println(password);
-            //method that checks if username and password are found in the file or not
-            //this method should return true or false
-            //if true then it access the main window
-            //if false then it gives an error message and the user clicks on okay then it goes to the login page again
+            String username = textField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            
+            if ( checkCrendits(username, password) ) {
+                this.dispose(); // close login window
+                FileHandler handler = new FileHandler("students.txt");
+                new MainWindow(handler);
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }
         }
         if (e.getSource() == exitButton){
             System.exit(0);
         }
+    }
+
+    private boolean checkCredentials(String username, String password) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2 && parts[0].equals(username) && parts[1].equals(password)) {
+                    return true;
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println("Error reading users file: " + ex.getMessage());
+        }
+        return false;
     }
 }
