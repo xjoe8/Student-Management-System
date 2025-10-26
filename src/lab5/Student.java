@@ -25,7 +25,8 @@ public class Student {
     public void setStudentID(int studentID) {
         if (studentID > 0) {
             this.studentID = studentID;
-        } else {
+        } 
+        else {
             System.out.println("Invalid student ID. Must be positive.");
         }
     }
@@ -37,7 +38,8 @@ public class Student {
     public void setFullname(String fullname) {
         if (fullname != null && !fullname.trim().isEmpty()) {
             this.fullname = fullname.trim();
-        } else {
+        } 
+        else {
             System.out.println("Invalid full name. Cannot be empty.");
         }
     }
@@ -49,7 +51,8 @@ public class Student {
     public void setAge(int age) {
         if (age >= 16 && age <= 100) {
             this.age = age;
-        } else {
+        } 
+        else {
             System.out.println("Invalid age. Must be between 16 and 100.");
         }
     }
@@ -62,7 +65,8 @@ public class Student {
         gender = Character.toUpperCase(gender);
         if (gender == 'M' || gender == 'F') {
             this.gender = gender;
-        } else {
+        } 
+        else {
             System.out.println("Invalid gender. Must be 'M' or 'F'.");
         }
     }
@@ -74,7 +78,8 @@ public class Student {
     public void setDepartment(String department) {
         if (department != null && !department.trim().isEmpty()) {
             this.department = department.trim();
-        } else {
+        } 
+        else {
             System.out.println("Invalid department. Cannot be empty.");
         }
     }
@@ -86,7 +91,8 @@ public class Student {
     public void setGPA(float GPA) {
         if (GPA >= 0.0f && GPA <= 4.0f) {
             this.GPA = GPA;
-        } else {
+        } 
+        else {
             System.out.println("Invalid GPA. Must be between 0.0 and 4.0.");
         }
     }
