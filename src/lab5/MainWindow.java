@@ -4,7 +4,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 public class MainWindow extends GUI implements ActionListener {
+    
     JButton Home, Add, View, Search, Update, Delete, Exit;
     JPanel cards;
     public String CARD_HOME   = "HOME";
@@ -19,7 +21,11 @@ public class MainWindow extends GUI implements ActionListener {
     JTextField uID, uName, uAge, uGpa;
     JComboBox<String> uDept;
     JRadioButton uMale, uFemale;
-    public MainWindow(){
+
+    private final FileHandler handler;
+    
+    public MainWindow(FileHandler handler){
+        this.handler = handler;
         this.setSize(1000, 700);
         this.setTitle("Main Window");
         int [] panelDimension1 = {0, 0, 350, 700};
