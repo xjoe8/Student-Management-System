@@ -16,9 +16,11 @@ public class FileHandler {
     public FileHandler (String filename){
         this.filename = filename;
         this.students = new ArrayList<>();
+        loadStudents();
     }
     
     public void loadStudents(){
+        saveStudents();
         students.clear();
         
         File file = new File(filename);
@@ -61,13 +63,14 @@ public class FileHandler {
     private boolean validateStudent(Student s) {
         if (s.getFullname() == null || s.getFullname().trim().isEmpty()) return false;
         if (s.getDepartment() == null || s.getDepartment().trim().isEmpty()) return false;
-        if (s.getAge() < 16) return false;
+        if (s.getAge() < 16 || s.getAge() > 100) return false;
         if (s.getGPA() < 0.0 || s.getGPA() > 4.0) return false;
         if (s.getGender() != 'M' && s.getGender() != 'F') return false;
         return true;
     }
     
     public boolean addStudent(Student newStudent) {
+        loadStudents();
         if (!validateStudent(newStudent)) {
             System.out.println("Validation failed for student: " + newStudent.getFullname());
             return false;
@@ -130,3 +133,4 @@ public class FileHandler {
         return false;
     }
 }
+
