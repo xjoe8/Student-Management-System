@@ -53,22 +53,26 @@ public class Student {
             this.age = age;
         } 
         else {
-            System.out.println("Invalid age. Must be between 16 and 100.");
+            throw new IllegalArgumentException("Invalid age. Must be between 16 and 100.");
         }
     }
+
 
     public char getGender() {
         return gender;
     }
 
     public void setGender(char gender) {
-        gender = Character.toUpperCase(gender);
-        if (gender == 'M' || gender == 'F') {
-            this.gender = gender;
-        } 
-        else {
-            System.out.println("Invalid gender. Must be 'M' or 'F'.");
+        if ( Character.isLetter(gender) ) {
+            gender = Character.toUpperCase(gender);
+            if (gender == 'M' || gender == 'F') {
+                this.gender = gender;
+                return;
+            } 
         }
+            else {
+                System.out.println("Invalid gender. Must be 'M' or 'F'.");
+            }
     }
 
     public String getDepartment() {
@@ -98,6 +102,6 @@ public class Student {
     }
 
     public String lineRepresentation() {
-        return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + GPA;
+        return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + String.format("%.2f", GPA);
     }
 }
