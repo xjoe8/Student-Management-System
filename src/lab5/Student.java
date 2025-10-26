@@ -1,6 +1,4 @@
-
 package lab5;
-
 
 public class Student {
     private int studentID;
@@ -10,13 +8,14 @@ public class Student {
     private String department;
     private float GPA;
 
-    public Student(int studentID, String fullname, int age, char gender, String department, float GPA){
-        this.studentID = studentID;
-        this.fullname = fullname;
-        this.age = age;
-        this.gender = gender;
-        this.department = department;
-        this.GPA = GPA;
+    public Student(int studentID, String fullname, int age, char gender, String department, float GPA) {
+        
+        setStudentID(studentID);
+        setFullname(fullname);
+        setAge(age);
+        setGender(gender);
+        setDepartment(department);
+        setGPA(GPA);
     }
 
     public int getStudentID() {
@@ -24,7 +23,11 @@ public class Student {
     }
 
     public void setStudentID(int studentID) {
-        this.studentID = studentID;
+        if (studentID > 0) {
+            this.studentID = studentID;
+        } else {
+            System.out.println("Invalid student ID. Must be positive.");
+        }
     }
 
     public String getFullname() {
@@ -32,7 +35,11 @@ public class Student {
     }
 
     public void setFullname(String fullname) {
-        this.fullname = fullname;
+        if (fullname != null && !fullname.trim().isEmpty()) {
+            this.fullname = fullname.trim();
+        } else {
+            System.out.println("Invalid full name. Cannot be empty.");
+        }
     }
 
     public int getAge() {
@@ -40,7 +47,11 @@ public class Student {
     }
 
     public void setAge(int age) {
-        this.age = age;
+        if (age >= 16 && age <= 100) {
+            this.age = age;
+        } else {
+            System.out.println("Invalid age. Must be between 16 and 100.");
+        }
     }
 
     public char getGender() {
@@ -48,7 +59,12 @@ public class Student {
     }
 
     public void setGender(char gender) {
-        this.gender = gender;
+        gender = Character.toUpperCase(gender);
+        if (gender == 'M' || gender == 'F') {
+            this.gender = gender;
+        } else {
+            System.out.println("Invalid gender. Must be 'M' or 'F'.");
+        }
     }
 
     public String getDepartment() {
@@ -56,7 +72,11 @@ public class Student {
     }
 
     public void setDepartment(String department) {
-        this.department = department;
+        if (department != null && !department.trim().isEmpty()) {
+            this.department = department.trim();
+        } else {
+            System.out.println("Invalid department. Cannot be empty.");
+        }
     }
 
     public float getGPA() {
@@ -64,12 +84,14 @@ public class Student {
     }
 
     public void setGPA(float GPA) {
-        this.GPA = GPA;
+        if (GPA >= 0.0f && GPA <= 4.0f) {
+            this.GPA = GPA;
+        } else {
+            System.out.println("Invalid GPA. Must be between 0.0 and 4.0.");
+        }
     }
 
-    public String lineRepresentation(){
+    public String lineRepresentation() {
         return studentID + "," + fullname + "," + age + "," + gender + "," + department + "," + GPA;
     }
-
-
 }
