@@ -16,10 +16,10 @@ public class FileHandler {
     public FileHandler (String filename){
         this.filename = filename;
         this.students = new ArrayList<>();
+        saveStudents();
     }
     
     public void loadStudents(){
-        saveStudents();
         students.clear();
         
         File file = new File(filename);
