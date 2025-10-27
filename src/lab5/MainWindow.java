@@ -92,6 +92,11 @@ public class MainWindow extends JFrame {
 
             int age = Integer.parseInt(ageS);
             double gpa = Double.parseDouble(gpaS);
+            
+            if(gpa < 0.0 || gpa > 4.0) {
+                JOptionPane.showMessageDialog(this, "GPA must be gretaer than 0.0 and less than 4.0 .", "Validation", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             int id = idGen.nextId();
             Student s = new Student(id, name, age, gender, dept, gpa);
